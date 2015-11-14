@@ -11,7 +11,7 @@ npm install merkle-tree-stream
 ## Usage
 
 ``` js
-var merkleStream = require('./')
+var merkleStream = require('merkle-tree-stream')
 var crypto = require('crypto')
 
 var stream = merkleStream({
@@ -63,7 +63,7 @@ Running the above will print
 
 `hash` is the hash of a tree node.
 
-You can always access the current partial roots of a merkle tree by accessing `stream.roots`.
+You can always access the current partial roots of the merkle tree by accessing `stream.roots`.
 If the number of numbers written to the stream is not a power of `2` then `stream.roots` will
 contain more than 1 node. Otherwise it will contain just a single root.
 
