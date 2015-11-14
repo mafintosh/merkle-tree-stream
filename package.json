@@ -8,10 +8,11 @@
     "through2": "^2.0.0"
   },
   "devDependencies": {
+    "standard": "^5.3.1",
     "tape": "^4.2.2"
   },
   "scripts": {
-    "test": "tape test.js"
+    "test": "standard && tape test.js"
   },
   "repository": {
     "type": "git",
