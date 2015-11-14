@@ -1,6 +1,6 @@
 {
   "name": "merkle-tree-stream",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A stream that generates a merkle tree based on the incoming data.",
   "main": "index.js",
   "dependencies": {
