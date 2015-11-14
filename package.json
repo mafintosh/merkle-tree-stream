@@ -1,7 +1,7 @@
 {
   "name": "merkle-tree-stream",
   "version": "1.0.0",
-  "description": "WIP - nothing to see here",
+  "description": "A stream that generates a merkle tree based on the incoming data.",
   "main": "index.js",
   "dependencies": {
     "flat-tree": "^1.2.1",
