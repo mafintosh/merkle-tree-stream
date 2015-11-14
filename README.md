@@ -64,8 +64,8 @@ Running the above will print
 `hash` is the hash of a tree node.
 
 You can always access the current partial roots of the merkle tree by accessing `stream.roots`.
-If the number of numbers written to the stream is not a power of `2` then `stream.roots` will
-contain more than 1 node. Otherwise it will contain just a single root.
+If the number of nodes written to the stream is not a power of `2` then `stream.roots` will
+contain more than 1 node (at most `log2(number-of-nodes-written)`). Otherwise it will contain just a single root.
 
 ## Related
 
