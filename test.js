@@ -20,12 +20,12 @@ tape('hashes', function (t) {
     index: 0,
     parent: 1,
     hash: hash(['a']),
-    data: 'a'
+    data: new Buffer('a')
   }, {
     index: 2,
     parent: 1,
     hash: hash(['b']),
-    data: 'b'
+    data: new Buffer('b')
   }, {
     index: 1,
     parent: 3,

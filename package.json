@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "flat-tree": "^1.2.1",
-    "through2": "^2.0.0"
+    "readable-stream": "^2.0.4"
   },
   "devDependencies": {
     "standard": "^5.3.1",

@@ -1,45 +1,32 @@
-var through = require('through2')
-var flat = require('flat-tree')
+var stream = require('readable-stream')
+var util = require('util')
+var generator = require('./generator')
 
-module.exports = function (opts) {
-  if (!opts || !opts.data || !opts.tree) throw new Error('opts.data and opts.tree required')
+module.exports = MerkleTree
 
-  var hashData = opts.data
-  var hashTree = opts.tree
-  var stream = through.obj(write)
-  stream.head = 0
-  stream.roots = []
-  return stream
+function MerkleTree (opts, roots) {
+  if (!(this instanceof MerkleTree)) return new MerkleTree(opts, roots)
+  if (!opts) opts = {}
+  this._generator = generator(opts, roots)
+  this.destroyed = false
+  this.roots = this._generator.roots
+  this.blocks = 0
+  var hwm = opts.highWaterMark || 16
+  stream.Transform.call(this, {objectMode: true, highWaterMark: hwm})
+}
 
-  function write (data, enc, cb) {
-    var hash = hashData(data, stream.roots, stream.head)
-    var root = {
-      index: stream.head,
-      parent: flat.parent(stream.head),
-      hash: hash,
-      data: data
-    }
+util.inherits(MerkleTree, stream.Transform)
 
-    stream.push(root)
-    stream.roots.push(root)
-    stream.head += 2
+MerkleTree.prototype.destroy = function (err) {
+  if (this.destroyed) return
+  this.destroyed = true
+  if (err) this.emit('error', err)
+  this.emit('close')
+}
 
-    while (stream.roots.length > 1) {
-      var left = stream.roots[stream.roots.length - 2]
-      var right = stream.roots[stream.roots.length - 1]
-
-      if (left.parent !== right.parent) break
-
-      stream.roots.pop()
-      stream.roots[stream.roots.length - 1] = root = {
-        index: left.parent,
-        parent: flat.parent(left.parent),
-        hash: hashTree(left.hash, right.hash),
-        data: null
-      }
-      stream.push(root)
-    }
-
-    cb()
-  }
+MerkleTree.prototype._transform = function (data, enc, cb) {
+  var nodes = this._generator.next(data)
+  for (var i = 0; i < nodes.length; i++) this.push(nodes[i])
+  this.blocks = this._generator.blocks
+  cb()
 }
