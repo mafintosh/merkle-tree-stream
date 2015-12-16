@@ -67,6 +67,22 @@ You can always access the current partial roots of the merkle tree by accessing 
 If the number of nodes written to the stream is not a power of `2` then `stream.roots` will
 contain more than 1 node (at most `log2(number-of-nodes-written)`). Otherwise it will contain just a single root.
 
+Optionally you can also pass in an array of `roots` in the options map as `{roots: roots}` to continue adding data
+to a previously generated merkle tree.
+
+## Low-level interface
+
+A non stream low-level interface can required by doing `require('merkle-tree-stream/generator')`.
+
+``` js
+var generator = merkle('merkle-tree-stream/generator')
+var gen = generator({tree: ..., data: ...}) // same options as above
+
+var nodes = gen.next('some data')
+console.log(nodes) // returns the tree nodes generated, similar to the stream output
+console.log(gen.roots) // contains the current roots nodes
+```
+
 ## Related
 
 See [mafintosh/flat-tree](https://github.com/mafintosh/flat-tree) for more information about
