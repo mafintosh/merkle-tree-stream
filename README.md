@@ -75,7 +75,7 @@ to a previously generated merkle tree.
 A non stream low-level interface can required by doing `require('merkle-tree-stream/generator')`.
 
 ``` js
-var generator = merkle('merkle-tree-stream/generator')
+var generator = require('merkle-tree-stream/generator')
 var gen = generator({tree: ..., data: ...}) // same options as above
 
 var nodes = gen.next('some data')
