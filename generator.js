@@ -8,13 +8,13 @@ module.exports = MerkleGenerator
 
 function MerkleGenerator (opts, roots) {
   if (!(this instanceof MerkleGenerator)) return new MerkleGenerator(opts, roots)
-  if (!opts || !opts.data || !opts.tree) throw new Error('opts.data and opts.tree required')
+  if (!opts || !opts.leaf || !opts.parent) throw new Error('opts.leaf and opts.parent required')
 
   this.roots = opts.roots || []
   this.blocks = this.roots.length ? flat.rightSpan(this.roots[this.roots.length - 1].index) / 2 : 0
 
-  this._data = opts.data
-  this._tree = opts.tree
+  this._leaf = opts.leaf
+  this._parent = opts.parent
 }
 
 MerkleGenerator.prototype.next = function (data, nodes) {
@@ -22,17 +22,18 @@ MerkleGenerator.prototype.next = function (data, nodes) {
   if (!nodes) nodes = []
 
   var index = 2 * this.blocks++
-  var hash = this._data(data)
 
-  var root = {
+  var leaf = {
     index: index,
     parent: flat.parent(index),
-    hash: hash,
+    hash: null,
+    size: data.length,
     data: data
   }
 
-  this.roots.push(root)
-  nodes.push(root)
+  leaf.hash = this._leaf(leaf, this.roots)
+  this.roots.push(leaf)
+  nodes.push(leaf)
 
   while (this.roots.length > 1) {
     var left = this.roots[this.roots.length - 2]
@@ -41,13 +42,14 @@ MerkleGenerator.prototype.next = function (data, nodes) {
     if (left.parent !== right.parent) break
 
     this.roots.pop()
-    this.roots[this.roots.length - 1] = root = {
+    this.roots[this.roots.length - 1] = leaf = {
       index: left.parent,
       parent: flat.parent(left.parent),
-      hash: this._tree(left.hash, right.hash),
+      hash: this._parent(left, right),
+      size: left.size + right.size,
       data: null
     }
-    nodes.push(root)
+    nodes.push(leaf)
   }
 
   return nodes

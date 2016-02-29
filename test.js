@@ -4,11 +4,11 @@ var merkleStream = require('./')
 
 tape('hashes', function (t) {
   var stream = merkleStream({
-    data: function (data) {
-      return hash([data])
+    leaf: function (leaf) {
+      return hash([leaf.data])
     },
-    tree: function (a, b) {
-      return hash([a, b])
+    parent: function (a, b) {
+      return hash([a.hash, b.hash])
     }
   })
 
@@ -20,18 +20,20 @@ tape('hashes', function (t) {
     index: 0,
     parent: 1,
     hash: hash(['a']),
+    size: 1,
     data: new Buffer('a')
   }, {
     index: 2,
     parent: 1,
     hash: hash(['b']),
+    size: 1,
     data: new Buffer('b')
   }, {
     index: 1,
     parent: 3,
+    size: 2,
     hash: hash([hash(['a']), hash(['b'])]),
     data: null
-
   }]
 
   stream.on('data', function (data) {
@@ -46,11 +48,11 @@ tape('hashes', function (t) {
 
 tape('one root on power of two', function (t) {
   var stream = merkleStream({
-    data: function (data) {
-      return hash([data])
+    leaf: function (leaf) {
+      return hash([leaf.data])
     },
-    tree: function (a, b) {
-      return hash([a, b])
+    parent: function (a, b) {
+      return hash([a.hash, b.hash])
     }
   })
 
@@ -69,11 +71,11 @@ tape('one root on power of two', function (t) {
 
 tape('multiple roots if not power of two', function (t) {
   var stream = merkleStream({
-    data: function (data) {
-      return hash([data])
+    leaf: function (leaf) {
+      return hash([leaf.data])
     },
-    tree: function (a, b) {
-      return hash([a, b])
+    parent: function (a, b) {
+      return hash([a.hash, b.hash])
     }
   })
 

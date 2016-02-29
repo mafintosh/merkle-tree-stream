@@ -15,15 +15,14 @@ var merkleStream = require('merkle-tree-stream')
 var crypto = require('crypto')
 
 var stream = merkleStream({
-  data: function (data, roots, index) {
+  leaf: function (leaf, roots) {
     // this function should hash incoming data
     // roots in the current partial roots of the merkle tree
-    // index is the index of this node
-    return crypto.createHash('sha256').update(data).digest()
+    return crypto.createHash('sha256').update(leaf.data).digest()
   },
-  tree: function (a, b) {
+  parent: function (a, b) {
     // hash two merkle tree node hashes into a new parent hash
-    return crypto.createHash('sha256').update(a).update(b).digest()
+    return crypto.createHash('sha256').update(a.hash).update(b.hash).digest()
   }
 })
 
@@ -76,7 +75,7 @@ A non stream low-level interface can required by doing `require('merkle-tree-str
 
 ``` js
 var generator = require('merkle-tree-stream/generator')
-var gen = generator({tree: ..., data: ...}) // same options as above
+var gen = generator({leaf: ..., parent: ...}) // same options as above
 
 var nodes = gen.next('some data')
 console.log(nodes) // returns the tree nodes generated, similar to the stream output

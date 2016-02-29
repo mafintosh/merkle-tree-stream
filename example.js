@@ -2,11 +2,11 @@ var merkleStream = require('./')
 var crypto = require('crypto')
 
 var stream = merkleStream({
-  data: function (data, roots) {
-    return crypto.createHash('sha256').update(data).digest()
+  leaf: function (leaf, roots) {
+    return crypto.createHash('sha256').update(leaf.data).digest()
   },
-  tree: function (a, b) {
-    return crypto.createHash('sha256').update(a).update(b).digest()
+  parent: function (a, b) {
+    return crypto.createHash('sha256').update(a.hash).update(b.hash).digest()
   }
 })
 
