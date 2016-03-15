@@ -10,7 +10,7 @@ function MerkleGenerator (opts, roots) {
   if (!(this instanceof MerkleGenerator)) return new MerkleGenerator(opts, roots)
   if (!opts || !opts.leaf || !opts.parent) throw new Error('opts.leaf and opts.parent required')
 
-  this.roots = opts.roots || []
+  this.roots = roots || opts.roots || []
   this.blocks = this.roots.length ? flat.rightSpan(this.roots[this.roots.length - 1].index) / 2 : 0
 
   this._leaf = opts.leaf
