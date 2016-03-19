@@ -13,6 +13,11 @@ function MerkleGenerator (opts, roots) {
   this.roots = roots || opts.roots || []
   this.blocks = this.roots.length ? 1 + flat.rightSpan(this.roots[this.roots.length - 1].index) / 2 : 0
 
+  for (var i = 0; i < this.roots.length; i++) {
+    var r = this.roots[i]
+    if (r && !r.parent) r.parent = flat.parent(r.index)
+  }
+
   this._leaf = opts.leaf
   this._parent = opts.parent
 }
