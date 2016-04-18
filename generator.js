@@ -40,11 +40,35 @@ MerkleGenerator.prototype.next = function (data, nodes) {
   this.roots.push(leaf)
   nodes.push(leaf)
 
+  return this._updateRoots(nodes)
+}
+
+MerkleGenerator.prototype._updateRoots = function (nodes, merge) {
+  if (!Array.isArray(nodes)) {
+    merge = nodes
+    nodes = []
+  }
+
+  var leaf
   while (this.roots.length > 1) {
     var left = this.roots[this.roots.length - 2]
     var right = this.roots[this.roots.length - 1]
 
-    if (left.parent !== right.parent) break
+    if (left.parent !== right.parent) {
+      if (!merge) break
+
+      // let a copy of the right root be its own partner
+      left = right
+      right = {
+        index: flat.sibling(right.index),
+        parent: right.parent,
+        hash: right.hash,
+        size: right.size,
+        data: right.data
+      }
+
+      this.roots.push(right)
+    }
 
     this.roots.pop()
     this.roots[this.roots.length - 1] = leaf = {
@@ -58,4 +82,8 @@ MerkleGenerator.prototype.next = function (data, nodes) {
   }
 
   return nodes
+}
+
+MerkleGenerator.prototype.finalize = function () {
+  return this._updateRoots(true)
 }
