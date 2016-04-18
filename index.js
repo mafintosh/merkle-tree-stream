@@ -26,7 +26,16 @@ MerkleTree.prototype.destroy = function (err) {
 
 MerkleTree.prototype._transform = function (data, enc, cb) {
   var nodes = this._generator.next(data)
-  for (var i = 0; i < nodes.length; i++) this.push(nodes[i])
-  this.blocks = this._generator.blocks
+  pushNodes(this, nodes)
   cb()
+}
+
+MerkleTree.prototype.finalize = function () {
+  var nodes = this._generator.finalize()
+  pushNodes(this, nodes)
+}
+
+function pushNodes (stream, nodes) {
+  for (var i = 0; i < nodes.length; i++) stream.push(nodes[i])
+  stream.blocks = stream._generator.blocks
 }
