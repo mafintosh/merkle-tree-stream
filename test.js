@@ -1,6 +1,7 @@
 var tape = require('tape')
 var crypto = require('crypto')
 var merkleStream = require('./')
+var bufferFrom = require('buffer-from')
 
 tape('hashes', function (t) {
   var stream = merkleStream({
@@ -21,13 +22,13 @@ tape('hashes', function (t) {
     parent: 1,
     hash: hash(['a']),
     size: 1,
-    data: new Buffer('a')
+    data: bufferFrom('a')
   }, {
     index: 2,
     parent: 1,
     hash: hash(['b']),
     size: 1,
-    data: new Buffer('b')
+    data: bufferFrom('b')
   }, {
     index: 1,
     parent: 3,

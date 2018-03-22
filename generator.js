@@ -3,6 +3,7 @@
 // versioned by the same semver as the stream interface.
 
 var flat = require('flat-tree')
+var bufferFrom = require('buffer-from')
 
 module.exports = MerkleGenerator
 
@@ -23,7 +24,7 @@ function MerkleGenerator (opts, roots) {
 }
 
 MerkleGenerator.prototype.next = function (data, nodes) {
-  if (!Buffer.isBuffer(data)) data = new Buffer(data)
+  if (!Buffer.isBuffer(data)) data = bufferFrom(data)
   if (!nodes) nodes = []
 
   var index = 2 * this.blocks++

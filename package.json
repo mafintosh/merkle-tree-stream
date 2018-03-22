@@ -4,6 +4,7 @@
   "description": "A stream that generates a merkle tree based on the incoming data.",
   "main": "index.js",
   "dependencies": {
+    "buffer-from": "^1.0.0",
     "flat-tree": "^1.3.0",
     "readable-stream": "^2.0.5"
   },
