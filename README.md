@@ -11,10 +11,10 @@ npm install merkle-tree-stream
 ## Usage
 
 ``` js
-var merkleStream = require('merkle-tree-stream')
+var MerkleTreeStream = require('merkle-tree-stream')
 var crypto = require('crypto')
 
-var stream = merkleStream({
+var stream = new MerkleTreeStream({
   leaf: function (leaf, roots) {
     // this function should hash incoming data
     // roots in the current partial roots of the merkle tree
@@ -74,8 +74,8 @@ to a previously generated merkle tree.
 A non stream low-level interface can required by doing `require('merkle-tree-stream/generator')`.
 
 ``` js
-var generator = require('merkle-tree-stream/generator')
-var gen = generator({leaf: ..., parent: ...}) // same options as above
+var MerkleGenerator = require('merkle-tree-stream/generator')
+var gen = new MerkleGenerator({leaf: ..., parent: ...}) // same options as above
 
 var nodes = gen.next('some data')
 console.log(nodes) // returns the tree nodes generated, similar to the stream output
