@@ -1,9 +1,9 @@
-var tape = require('tape')
-var crypto = require('crypto')
-var merkleStream = require('./')
+const tape = require('tape')
+const crypto = require('crypto')
+const MerkleTreeStream = require('./')
 
 tape('hashes', function (t) {
-  var stream = merkleStream({
+  var stream = new MerkleTreeStream({
     leaf: function (leaf) {
       return hash([leaf.data])
     },
@@ -21,13 +21,13 @@ tape('hashes', function (t) {
     parent: 1,
     hash: hash(['a']),
     size: 1,
-    data: new Buffer('a')
+    data: Buffer.from('a')
   }, {
     index: 2,
     parent: 1,
     hash: hash(['b']),
     size: 1,
-    data: new Buffer('b')
+    data: Buffer.from('b')
   }, {
     index: 1,
     parent: 3,
@@ -47,7 +47,7 @@ tape('hashes', function (t) {
 })
 
 tape('one root on power of two', function (t) {
-  var stream = merkleStream({
+  var stream = new MerkleTreeStream({
     leaf: function (leaf) {
       return hash([leaf.data])
     },
@@ -70,7 +70,7 @@ tape('one root on power of two', function (t) {
 })
 
 tape('multiple roots if not power of two', function (t) {
-  var stream = merkleStream({
+  var stream = new MerkleTreeStream({
     leaf: function (leaf) {
       return hash([leaf.data])
     },
