@@ -8,7 +8,7 @@
     "streamx": "^2.7.1"
   },
   "devDependencies": {
-    "standard": "^6.0.7",
+    "standard": "^16.0.3",
     "tape": "^4.4.0"
   },
   "scripts": {

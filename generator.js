@@ -11,8 +11,8 @@ module.exports = class MerkleGenerator {
     this.roots = roots || opts.roots || []
     this.blocks = this.roots.length ? 1 + flat.rightSpan(this.roots[this.roots.length - 1].index) / 2 : 0
 
-    for (var i = 0; i < this.roots.length; i++) {
-      var r = this.roots[i]
+    for (let i = 0; i < this.roots.length; i++) {
+      const r = this.roots[i]
       if (r && !r.parent) r.parent = flat.parent(r.index)
     }
 
@@ -24,9 +24,9 @@ module.exports = class MerkleGenerator {
     if (!Buffer.isBuffer(data)) data = Buffer.from(data)
     if (!nodes) nodes = []
 
-    var index = 2 * this.blocks++
+    const index = 2 * this.blocks++
 
-    var leaf = {
+    let leaf = {
       index: index,
       parent: flat.parent(index),
       hash: null,
@@ -39,8 +39,8 @@ module.exports = class MerkleGenerator {
     nodes.push(leaf)
 
     while (this.roots.length > 1) {
-      var left = this.roots[this.roots.length - 2]
-      var right = this.roots[this.roots.length - 1]
+      const left = this.roots[this.roots.length - 2]
+      const right = this.roots[this.roots.length - 1]
 
       if (left.parent !== right.parent) break
 

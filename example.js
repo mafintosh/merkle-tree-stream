@@ -1,7 +1,7 @@
-var MerkleTreeStream = require('./')
-var crypto = require('crypto')
+const MerkleTreeStream = require('./')
+const crypto = require('crypto')
 
-var stream = new MerkleTreeStream({
+const stream = new MerkleTreeStream({
   leaf: function (leaf, roots) {
     return crypto.createHash('sha256').update(leaf.data).digest()
   },
