@@ -3,7 +3,7 @@ const crypto = require('crypto')
 const MerkleTreeStream = require('./')
 
 tape('hashes', function (t) {
-  var stream = new MerkleTreeStream({
+  const stream = new MerkleTreeStream({
     leaf: function (leaf) {
       return hash([leaf.data])
     },
@@ -16,7 +16,7 @@ tape('hashes', function (t) {
   stream.write('b')
   stream.end()
 
-  var expected = [{
+  const expected = [{
     index: 0,
     parent: 1,
     hash: hash(['a']),
@@ -47,7 +47,7 @@ tape('hashes', function (t) {
 })
 
 tape('one root on power of two', function (t) {
-  var stream = new MerkleTreeStream({
+  const stream = new MerkleTreeStream({
     leaf: function (leaf) {
       return hash([leaf.data])
     },
@@ -70,7 +70,7 @@ tape('one root on power of two', function (t) {
 })
 
 tape('multiple roots if not power of two', function (t) {
-  var stream = new MerkleTreeStream({
+  const stream = new MerkleTreeStream({
     leaf: function (leaf) {
       return hash([leaf.data])
     },
@@ -92,7 +92,7 @@ tape('multiple roots if not power of two', function (t) {
 })
 
 function hash (list) {
-  var sha = crypto.createHash('sha256')
-  for (var i = 0; i < list.length; i++) sha.update(list[i])
+  const sha = crypto.createHash('sha256')
+  for (let i = 0; i < list.length; i++) sha.update(list[i])
   return sha.digest()
 }
