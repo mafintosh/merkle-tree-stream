@@ -3,8 +3,9 @@
 // versioned by the same semver as the stream interface.
 
 const flat = require('flat-tree')
+const CLOSE_UP = Symbol('CLOSE_UP')
 
-module.exports = class MerkleGenerator {
+class MerkleGenerator {
   constructor (opts, roots) {
     if (!opts || !opts.leaf || !opts.parent) throw new Error('opts.leaf and opts.parent required')
 
@@ -21,28 +22,50 @@ module.exports = class MerkleGenerator {
   }
 
   next (data, nodes) {
-    if (!Buffer.isBuffer(data)) data = Buffer.from(data)
+    const closeUp = data === CLOSE_UP
     if (!nodes) nodes = []
+    if (!closeUp) {
+      if (!Buffer.isBuffer(data)) data = Buffer.from(data)
 
-    const index = 2 * this.blocks++
+      const index = 2 * this.blocks++
 
-    let leaf = {
-      index: index,
-      parent: flat.parent(index),
-      hash: null,
-      size: data.length,
-      data: data
+      const leaf = {
+        index: index,
+        parent: flat.parent(index),
+        hash: null,
+        size: data.length,
+        data: data
+      }
+
+      leaf.hash = this._leaf(leaf, this.roots)
+      this.roots.push(leaf)
+      nodes.push(leaf)
     }
 
-    leaf.hash = this._leaf(leaf, this.roots)
-    this.roots.push(leaf)
-    nodes.push(leaf)
+    return this._updateRoots(nodes, closeUp)
+  }
 
+  _updateRoots (nodes, closeUp) {
+    let leaf
     while (this.roots.length > 1) {
-      const left = this.roots[this.roots.length - 2]
-      const right = this.roots[this.roots.length - 1]
+      let left = this.roots[this.roots.length - 2]
+      let right = this.roots[this.roots.length - 1]
 
-      if (left.parent !== right.parent) break
+      if (left.parent !== right.parent) {
+        if (!closeUp) break
+
+        // let a copy of the right root be its own partner
+        left = right
+        right = {
+          index: flat.sibling(right.index),
+          parent: right.parent,
+          hash: right.hash,
+          size: right.size,
+          data: right.data
+        }
+
+        this.roots.push(right)
+      }
 
       this.roots.pop()
       this.roots[this.roots.length - 1] = leaf = {
@@ -58,3 +81,6 @@ module.exports = class MerkleGenerator {
     return nodes
   }
 }
+MerkleGenerator.CLOSE_UP = CLOSE_UP
+
+module.exports = MerkleGenerator
