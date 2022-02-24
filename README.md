@@ -23,7 +23,10 @@ var stream = new MerkleTreeStream({
   parent: function (a, b) {
     // hash two merkle tree node hashes into a new parent hash
     return crypto.createHash('sha256').update(a.hash).update(b.hash).digest()
-  }
+  },
+  // Set to true if you want the stream to write a CLOSE_UP entry before
+  // the end of the stream. Read more about CLOSE_UP below.
+  closeUp: false
 })
 
 stream.write('hello')
@@ -86,6 +89,54 @@ console.log(gen.roots) // contains the current roots nodes
 
 See [mafintosh/flat-tree](https://github.com/mafintosh/flat-tree) for more information about
 how node/parent indexes are calculated.
+
+## Closing up the tree and enforcing a single root
+
+If you write an uneven number of nodes to the stream, the tree will have
+dangling nodes upon further examination.
+
+```js
+const stream = new MerkleTreeStream(/* ... */)
+stream.write('a')
+stream.write('b')
+stream.write('c')
+stream.write('d')
+stream.write('e')
+```
+
+This would cause a tree structure looking like this with the `e` node dangling.
+
+```
+      abcd
+     /    \
+  ab       cd
+ /  \     /  \
+a    b   c    d   e
+```
+
+Here `ab` is the parent which's hash is generated using `options.parent(a, b)`.
+
+By writing the special object `MerkleTreeStream.CLOSE_UP`, you can add the missing
+parent nodes.
+
+```js
+stream.write(MerkleTreeStream.CLOSE_UP)
+```
+
+```
+           abcdeeee
+         /          \
+     abcd            eeee
+    /    \          /    \
+  ab      cd      **      ee
+ /  \    /  \    /  \    /  \
+a    b  c    d  *    *  *    e
+```
+
+The newly created parent node `ee` is created using `options.parent(e, e)`
+while `eeee` is created using `options.parent(ee, ee)`.
+
+The `*` nodes are not written to the merkle tree.
 
 ## License
 
