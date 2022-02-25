@@ -2,6 +2,9 @@ const tape = require('tape')
 const crypto = require('crypto')
 const MerkleTreeStream = require('./')
 const MerkleGenerator = require('./generator')
+const util = require('./util')
+const isLeaf = util.isLeaf
+const isParent = util.isParent
 
 const opts = {
   leaf: function (leaf) {
@@ -127,6 +130,20 @@ tape('highwatermark while streaming', function (t) {
     highWaterMark: 8
   }))
   t.notEqual(stream, null)
+  t.end()
+})
+
+tape('isLeaf/isParent test', function (t) {
+  const gen = new MerkleGenerator(opts)
+  const nodes = []
+  gen.next('a', nodes)
+  gen.next('b', nodes)
+  ;[isLeaf, isLeaf, isParent].forEach(function (expected, index) {
+    const entry = nodes[index]
+    const unexpected = (expected === isLeaf ? isParent : isLeaf)
+    t.ok(expected(entry), 'Entry #' + index + ' ' + expected.name)
+    t.equal(unexpected(entry), false, 'Entry #' + index + ' not ' + unexpected.name)
+  })
   t.end()
 })
 
