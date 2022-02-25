@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictFunctionTypes": true,
+    "alwaysStrict": true,
+    "resolveJsonModule": true,
+    "lib": ["es6", "dom"],
+    "baseUrl": ".",
+    "paths": {
+      "merkle-tree-stream": ["../index.d.ts"],
+      "merkle-tree-stream/generator": ["../generator.d.ts"],
+      "merkle-tree-stream/types": ["../types.d.ts"],
+      "merkle-tree-stream/util": ["../util.d.ts"]
+    }
+  }
+}
