@@ -4,7 +4,6 @@ const MerkleGenerator = require('./generator')
 module.exports = class MerkleTreeStream extends Transform {
   constructor (opts, roots) {
     super({ highWaterMark: (opts && opts.highWaterMark) || 16 })
-    if (!opts) opts = {}
     this._generator = new MerkleGenerator(opts, roots)
     this.roots = this._generator.roots
     this.blocks = 0

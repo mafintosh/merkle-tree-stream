@@ -8,11 +8,15 @@
     "streamx": "^2.11.1"
   },
   "devDependencies": {
+    "c8": "^7.11.0",
     "standard": "^16.0.3",
     "tape": "^5.3.1"
   },
   "scripts": {
-    "test": "standard && tape test.js"
+    "test": "npm run lint && npm run coverage",
+    "lint": "standard",
+    "coverage": "c8 npm run unit",
+    "unit": "tape test.js"
   },
   "repository": {
     "type": "git",
